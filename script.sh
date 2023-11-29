@@ -1,26 +1,54 @@
 #!/bin/bash
 
-sudo apt update
+
+LOG_FILE="installation_log.txt"
+
+log() {
+    echo "$(date +"%Y-%m-%d %H:%M:%S"): $1" >> "$LOG_FILE"
+}
+
+exec &> "$LOG_FILE"
+echo "$(date +"%Y-%m-%d %H:%M:%S"): $1" >> "$LOG_FILE"
+
+log "Starting installation script..."
+
+sudo apt-get update
+
 if [ $? -eq 0 ]; then
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/checker-qual-3.12.0.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/error_prone_annotations-2.11.0.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/failureaccess-1.0.1.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/guava-31.1-jre.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/j2objc-annotations-1.3.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/jna-5.10.0.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/jna-platform-5.10.0.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/jsr305-3.0.2.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/looca-api-2.2.0.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/mssql-jdbc-12.4.2.jre11.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/mysql-connector-j-8.1.0.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/oshi-core-6.1.5.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/protobuf-java-3.21.9.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/slf4j-api-1.7.30.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/slf4j-simple-1.7.30.jar
-    curl -O -L https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/teste-cinecine.jar
+    log "Updating package list successful"
+    JAR_URLS=(
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/checker-qual-3.12.0.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/error_prone_annotations-2.11.0.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/failureaccess-1.0.1.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/guava-31.1-jre.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/j2objc-annotations-1.3.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/jna-5.10.0.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/jna-platform-5.10.0.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/jsr305-3.0.2.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/looca-api-2.2.0.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/mssql-jdbc-12.4.2.jre11.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/mysql-connector-j-8.1.0.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/oshi-core-6.1.5.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/protobuf-java-3.21.9.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/slf4j-api-1.7.30.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/slf4j-simple-1.7.30.jar"
+        "https://github.com/PARAG0NTECH/JAR-PROJETO/raw/main/teste_cinecine_jar/teste-cinecine.jar"
+
+    )
+    for URL in "${JAR_URLS[@]}"; do
+        curl -O -L "$URL"
+        if [ $? -ne 0 ]; then
+            log "Error downloading JAR file from $URL"
+            exit 1
+        fi
+    done
+    log "JAR files downloaded successfully"
+else 
+    log "Error updating package list"
 fi
 sleep 5
+
 if [ $? -eq 0 ]; then
 
     docker --version
@@ -34,7 +62,7 @@ if [ $? -eq 0 ]; then
 
         if [ "$get" == "s" ]; then
             # Instalar o Docker
-            sudo apt install docker.io -y
+            sudo apt-get install docker.io -y
             sudo systemctl start docker
             sudo systemctl enable docker
         else
@@ -55,8 +83,8 @@ if [ $? -eq 0 ]; then
 
         if [ "$get" == "s" ]; then
             # Instalar o Java 11
-            sudo apt-get update
-            sudo apt-get install openjdk-17-jdk -y
+            sudo apt-get-get update
+            sudo apt-get-get install openjdk-17-jdk -y
         else
             echo "O Java não foi instalado."
             exit 1  # Saia do script com código de erro
