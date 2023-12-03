@@ -4,7 +4,8 @@
 LOG_FILE="installation_log.txt"
 
 log() {
-    echo "$(date +"%Y-%m-%d %H:%M:%S"): $1" >> "$LOG_FILE"
+    current_time=$(/bin/date "+%Y-%m-%d %H:%M:%S")
+    echo "$current_time: $1" >> "$LOG_FILE"
 }
 
 exec &> "$LOG_FILE"
@@ -56,19 +57,10 @@ if [ $? -eq 0 ]; then
     if [ $? -eq 0 ]; then
         echo "Docker instalado"
     else
-        echo "Docker não instalado"
-        echo "Gostaria de instalar o Docker? [s/n]"
-        read get
-
-        if [ "$get" == "s" ]; then
-            # Instalar o Docker
-            sudo apt-get install docker.io -y
-            sudo systemctl start docker
-            sudo systemctl enable docker
-        else
-            echo "O Docker não foi instalado."
-            exit 1  # Saia do script com código de erro
-        fi
+        # Instalar o Docker
+        sudo apt-get install docker.io -y
+        sudo systemctl start docker
+        sudo systemctl enable docker
     fi
 
     # Verificar se o Java está instalado
@@ -77,18 +69,9 @@ if [ $? -eq 0 ]; then
     if [ $? -eq 0 ]; then
         echo "Java instalado"
     else
-        echo "Java não instalado"
-        echo "Gostaria de instalar o Java? [s/n]"
-        read get
-
-        if [ "$get" == "s" ]; then
-            # Instalar o Java 11
-            sudo apt-get-get update
-            sudo apt-get-get install openjdk-17-jdk -y
-        else
-            echo "O Java não foi instalado."
-            exit 1  # Saia do script com código de erro
-        fi
+        # Instalar o Java 11
+        sudo apt-get update
+        sudo apt-get install openjdk-17-jdk -y
     fi
     
     cd ../..
